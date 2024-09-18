@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="p-2">
     <div class="button-container">
       <!-- <button class="btn btn-primary">
         <router-link :to="{ name: 'StudentCreate' }" class="link-text">
@@ -8,9 +8,9 @@
       </button> -->
     </div>
 
-    <div>
+    <!-- <div>
       <FormStudent />
-    </div>
+    </div> -->
 
     <table v-if="list.length" class="styled-table">
       <thead>
@@ -62,7 +62,7 @@ import axios from 'axios';
 
 // import Modal from '../Modal/Modal.vue';
 import { useStore } from 'vuex';
-import FormStudent from './FormStudent.vue';
+import FormStudent from './StudentCalendar.vue';
 
 const list = ref([]);
 const seletedObject = ref(null);

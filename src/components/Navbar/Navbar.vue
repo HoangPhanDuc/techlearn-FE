@@ -1,58 +1,51 @@
 <template>
-
   <div class="wrapper">
-    <nav id="sidebar" :class="{ 'active': isSidebarCollapsed }">
+    <nav id="sidebar" :class="{ active: isSidebarCollapsed }">
       <div class="sidebar-header">
-        <h3>TeachLearn</h3>
+        <h3>TechLearn</h3>
       </div>
       <ul class="list-unstyled components">
-        <li class="active">
-          <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Trang
-            chủ</a>
-          <ul class="collapse list-unstyled" id="homeSubmenu">
-            <li>
-              <router-link to="/teacher" class="nav-link">Lịch giảng viên</router-link>
-            </li>
-          </ul>
+        <li v-if="isTeacher || isMentor" class="active">
+          <router-link to="/teacher" class="nav-link">Lịch cá nhân</router-link>
         </li>
-        <li>
+        <li v-if="isUser">
           <router-link to="/student" class="nav-link">Đặt lịch học</router-link>
         </li>
-        <li>
-          <!-- <a href="#">Giới thiệu</a> -->
-          <!-- <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false"
-                      class="dropdown-toggle">Trang</a> -->
-          <!-- <ul class="collapse list-unstyled" id="pageSubmenu"> -->
-          <!-- <li>
-                          <router-link to="/student" class="nav-link">Đặt lịch học</router-link>
-                      </li> -->
-          <!-- <li><a href="#">Trang 2</a></li>
-                      <li><a href="#">Trang 3</a></li> -->
-          <!-- </ul> -->
+        <li v-if="isTeacher">
+          <router-link to="/listPrompt">Cấu hình AI</router-link>
         </li>
-        <li> <router-link to="/listPrompt">Cấu hình AI </router-link></li>
-        <li> <router-link to="/coursePage">Khóa học của tôi </router-link></li>
-        <!-- <li><a href="#">Dự án</a></li>
-              <li><a href="#">Liên hệ</a></li> -->
+        <li v-if="isUser">
+          <router-link to="/coursePage">Khóa học của tôi</router-link>
+        </li>
       </ul>
     </nav>
   </div>
-
-
 </template>
 
-
 <script setup>
+import { onMounted, ref, computed } from "vue";
+import { inject } from "vue";
+import { useStore } from "vuex";
 
-import { ref } from "vue";
+const isSidebarCollapsed = inject("isSidebarCollapsed");
+const store = useStore();
+const user = computed(() => store.getters.user);
 
-import { inject } from 'vue';
-const isSidebarCollapsed = inject('isSidebarCollapsed');
-const selectedItem = ref(0);
+onMounted(() => {
+  if (!store.getters.isLoggedIn) {
+    store.dispatch("fetchUser");
+  }
+});
 
-const handleSelect = (e) => {
-  selectedItem.value = e;
-};
+const isTeacher = computed(() =>
+  user.value?.roles.some((role) => role.name === "TEACHER")
+);
+const isUser = computed(() =>
+  user.value?.roles.some((role) => role.name === "USER")
+);
+const isMentor = computed(() =>
+  user.value?.roles.some((role) => role.name === "MENTOR")
+);
 </script>
 
 <style scoped>
@@ -63,9 +56,6 @@ const handleSelect = (e) => {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* .list-item{ */
-/* padding: 5px; */
-/* } */
 .item {
   padding: 10px;
   cursor: pointer;
@@ -75,7 +65,7 @@ const handleSelect = (e) => {
 }
 
 .active {
-  background-color: #4A4A8E;
+  background-color: #4a4a8e;
   font-weight: bold;
   border-radius: 5px;
 }
@@ -94,7 +84,7 @@ const handleSelect = (e) => {
 #sidebar {
   min-width: 220px;
   max-width: 220px;
-  background: #4A4A8E;
+  background: #4a4a8e;
   color: #ffffff;
   transition: all 0.3s;
 }
@@ -128,14 +118,13 @@ const handleSelect = (e) => {
 }
 
 #sidebar ul li a:hover {
-  background: #5B5BAD;
+  background: #5b5bad;
 }
 
 #sidebar ul li.active>a,
 a[aria-expanded="true"] {
-  background: #5B5BAD;
+  background: #5b5bad;
 }
-
 
 #sidebar.active {
   margin-left: -220px;
@@ -143,7 +132,7 @@ a[aria-expanded="true"] {
 
 .router-link-active,
 .router-link-exact-active {
-  background-color: #5B5BAD;
+  background-color: #5b5bad;
   color: #ffffff;
 }
 
